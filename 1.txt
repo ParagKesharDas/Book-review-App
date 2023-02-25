@@ -1,0 +1,204 @@
+i have a node js project where i have index.js and router folder in router folder 3 files 1.auth_users.js 2.bookbd.js 3.general.js
+now 1.auth_users.js is
+const express = require('express');
+const jwt = require('jsonwebtoken');
+let books = require("./booksdb.js");
+const regd_users = express.Router();
+
+let users = [];
+
+const isValid = (username)=>{ //returns boolean
+//write code to check is the username is valid
+}
+
+const authenticatedUser = (username,password)=>{ //returns boolean
+//write code to check if username and password match the one we have in records.
+}
+
+//only registered users can login
+regd_users.post("/login", (req,res) => {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+});
+
+// Add a book review
+regd_users.put("/auth/review/:isbn", (req, res) => {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+});
+
+module.exports.authenticated = regd_users;
+module.exports.isValid = isValid;
+module.exports.users = users;
+
+
+2.bookbd.js is
+
+let books = {
+      1: {"author": "Chinua Achebe","title": "Things Fall Apart", "reviews": {} },
+      2: {"author": "Hans Christian Andersen","title": "Fairy tales", "reviews": {} },
+      3: {"author": "Dante Alighieri","title": "The Divine Comedy", "reviews": {} },
+      4: {"author": "Unknown","title": "The Epic Of Gilgamesh", "reviews": {} },
+      5: {"author": "Unknown","title": "The Book Of Job", "reviews": {} },
+      6: {"author": "Unknown","title": "One Thousand and One Nights", "reviews": {} },
+      7: {"author": "Unknown","title": "Nj\u00e1l's Saga", "reviews": {} },
+      8: {"author": "Jane Austen","title": "Pride and Prejudice", "reviews": {} },
+      9: {"author": "Honor\u00e9 de Balzac","title": "Le P\u00e8re Goriot", "reviews": {} },
+      10: {"author": "Samuel Beckett","title": "Molloy, Malone Dies, The Unnamable, the trilogy", "reviews": {} }
+}
+
+module.exports=books;
+
+
+ 3.general.js is
+const express = require('express');
+let books = require("./booksdb.js");
+let isValid = require("./auth_users.js").isValid;
+let users = require("./auth_users.js").users;
+const public_users = express.Router();
+
+
+public_users.post("/register", (req,res) => {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+});
+
+// Get the book list available in the shop
+public_users.get('/',function (req, res) {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+});
+
+// Get book details based on ISBN
+public_users.get('/isbn/:isbn',function (req, res) {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+ });
+  
+// Get book details based on author
+public_users.get('/author/:author',function (req, res) {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+});
+
+// Get all books based on title
+public_users.get('/title/:title',function (req, res) {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+});
+
+//  Get book review
+public_users.get('/review/:isbn',function (req, res) {
+  //Write your code here
+  return res.status(300).json({message: "Yet to be implemented"});
+});
+
+module.exports.general = public_users;
+ 
+index.js is 
+
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const session = require('express-session')
+const customer_routes = require('./router/auth_users.js').authenticated;
+const genl_routes = require('./router/general.js').general;
+
+const app = express();
+
+app.use(express.json());
+
+app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+
+app.use("/customer/auth/*", function auth(req,res,next){
+//Write the authenication mechanism here
+});
+ 
+const PORT =5000;
+
+app.use("/customer", customer_routes);
+app.use("/", genl_routes);
+
+app.listen(PORT,()=>console.log("Server is running"));
+
+
+Understanding the user routes
+Navigate to the router directory having the below 3 files:
+
+booksdb.js - This contains the the preloaded book information for this application.
+
+general.js - This contains the skeletal implementations for the routes which a general user can access.
+
+auth_users.js - This contains the skeletal implementations for the routes which an authorized user can access.
+
+Task 1:
+Updating the code for the authentication mechanism:
+Navigate to index.js and update the authentication code under app.use("/customer/auth/*", function auth(req,res,next){:
+Hint: Use the session authorization feature (implemented in the Practice project lab) to authenticate a user based on the access token.
+
+Update and test the general user routes in general.js.
+Task 2:
+Complete the code for getting the list of books available in the shop under public_users.get('/',function (req, res) {.
+Hint: Use the JSON.stringify method for displaying the output neatly.
+
+Task 3:
+Complete the code for getting the book details based on ISBN under public_users.get('/isbn/:isbn',function (req, res) {.
+Hint: Retrieve the ISBN from the request parameters
+
+Task 4:
+Complete the code for getting the book details based on the author under public_users.get('/author/:author',function (req, res) {.
+Hints:
+1. Obtain all the keys for the ‘books’ object.
+2. Iterate through the ‘books’ array & check the author matches the one provided in the request parameters.
+
+Task 5:
+Complete the code for getting the book details based on the author under public_users.get('/title/:title',function (req, res) {.
+Hint: This will be similar to Exercise 3
+
+Task 6:
+Complete the code for getting book reviews under public_users.get('/review/:isbn',function (req, res) {.
+Hint: Get the book reviews based on ISBN provided in the request parameters.
+
+Task 7:
+Complete the code for registering a new user
+Hint: The code should take the ‘username’ and ‘password’ provided in the body of the request for registration. If the username already exists, it must mention the same & must also show other errors like eg. when username &/ password are not provided.
+
+
+
+Update and test the authenticated user routes in auth_users.js.
+Task 8:
+Complete the code for logging in as a registered user.
+Hint: The code must validate and sign in a customer based on the username and password created in Exercise 6. It must also save the user credentials for the session as a JWT.
+
+Task 9:
+Complete the code for adding or modifying a book review.
+Hint: You have to give a review as a request query & it must get posted with the username (stored in the session) posted. If the same user posts a different review on the same ISBN, it should modify the existing review. If another user logs in and posts a review on the same ISBN, it will get added as a different review under the same ISBN.
+
+Task 10:
+Complete the code for deleting a book review under regd_users.delete("/auth/review/:isbn", (req, res) => {
+
+Hint: Filter & delete the reviews based on the session username, so that a user can delete only his/her reviews and not other users’.
+
+
+Improving the scope of Tasks 1-4 using Promises or Async-Await
+You will now use Promise callbacks or Async-Await functions for doing the same functionality which we covered synchronously in Tasks 1-4.
+
+Task 11:
+Add the code for getting the list of books available in the shop (done in Task 1) using Promise callbacks or async-await with Axios.
+Hint: Refer to this lab on Promises and Callbacks.
+
+Please ensure that the general.js file has the code for getting the list of books available in the shop using Promise callbacks or async-await with Axios is covered. This will be used for the evaluation of Task 10.
+Task 12:
+Add the code for getting the book details based on ISBN (done in Task 2) using Promise callbacks or async-await with Axios.
+Hint: Refer to this lab on Promises and Callbacks.
+
+Please ensure that the general.js file has the code for getting the book details based on ISBN using Promise callbacks or async-await with Axios is covered. This will be used for the evaluation of Task 11.
+Task 13:
+Add the code for getting the book details based on Author (done in Task 3) using Promise callbacks or async-await with Axios.
+Hint: Refer to this lab on Promises and Callbacks.
+
+Please ensure that the general.js file has the code for or getting the book details based on Author using Promise callbacks or async-await with Axios is covered. This will be used for the evaluation of Task 12.
+Task 14:
+Add the code for getting the book details based on Title (done in Task 4) using Promise callbacks or async-await with Axios.
+Hint: Refer to this lab on Promises and Callbacks.
+
+Please ensure that the general.js file has the code for or getting the book details based on Title using Promise callbacks or async-await with Axios is covered. This will be used for the evaluation of Task 13.
